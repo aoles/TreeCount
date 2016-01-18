@@ -26,7 +26,7 @@ shinyServer(function(input, output) {
     
     #PERFORM RASTERIZE OPERATIONS
     map_rgb = col2rgb(as.matrix(map_downloaded))
-    map_rasterized2 = do.call("brick",
+    map_rasterized = do.call("brick",
                               lapply(1:3, function(channel) raster(matrix(map_rgb[channel,], nrow(map_downloaded), ncol(map_downloaded))))
     )
     
