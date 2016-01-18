@@ -4,4 +4,4 @@ Shiny app demonstrating how to count trees in an orchard using [EBImage](http://
 # Usage
 
     library("shiny")
-    runGitHub("https://github.com/aoles/TreeCount")
+    runGitHub("aoles/TreeCount")
