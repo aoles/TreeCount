@@ -1,2 +1,7 @@
 # TreeCount
-Shiny app demonstrating how to count trees in an orchard using EBImage
+Shiny app demonstrating how to count trees in an orchard using [EBImage](http://bioconductor.org/packages/EBImage)
+
+# Usage
+
+    library("shiny")
+    runGitHub("https://github.com/aoles/TreeCount")
