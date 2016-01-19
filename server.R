@@ -12,9 +12,7 @@ library(raster)
 
 set.seed(1)
 
-options(EBImage.display="raster")
-
-renderImage = function(x) renderPlot(display(x), width = isolate(dim(x)[1L]), height = isolate(dim(x)[2L]))
+renderImage = function(x) renderPlot(display(x(), method="raster"), width = isolate(dim(x())[1L]), height = isolate(dim(x())[2L]))
 
 shinyServer(function(input, output) {
   img = reactive({
@@ -44,30 +42,32 @@ shinyServer(function(input, output) {
   
   inv = reactive(if (!is.null(img())) 1 - channel(img(), "gray") else NULL)
   
-  output$img <- renderImage(img())
+  output$img <- renderImage(img)
   
   filtered = reactive(if(input$filter) gblur(inv(), input$filtersize) else inv())
   
-  output$filtered <- renderImage(filtered())
+  output$filtered <- renderImage(filtered)
 
   thresholded = reactive({
     thresh(filtered(), input$w, input$h, input$offset)
   })
   
-  output$thresholded <- renderImage(thresholded())
+  output$thresholded <- renderImage(thresholded)
   
   opened = reactive({
       res = opening(thresholded(), makeBrush(input$osize, shape = "disc"))
       if (input$fillhull) fillHull(res) else res
   })
   
-  output$opening <- renderImage(opened())
+  output$opening <- renderImage(opened)
   
   segmented = reactive(watershed( distmap(opened())) )
   
-  output$segmentation <- renderImage(colorLabels(segmented()))
+  colorLabeled = reactive(colorLabels(segmented()))
+  output$segmentation <- renderImage(colorLabeled)
   
   output$numberOfTrees <- renderText(sprintf("Found %d trees", max(segmented())))
   
-  output$overlay <- renderImage(paintObjects(segmented(), img(), col = c("yellow", "green"), opac = c(.5, .2)))
+  ovarlay <- reactive(paintObjects(segmented(), img(), col = c("yellow", "green"), opac = c(.5, .2)))
+  output$overlay <- renderImage(ovarlay)
 })
